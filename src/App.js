@@ -12,7 +12,8 @@ class App extends React.Component {
       city: '',
       locationData: [],
       error: false,
-      errorMsg: ''
+      errorMsg: '',
+      mapImageURL: ''
     }
   }
 
@@ -22,9 +23,6 @@ class App extends React.Component {
     })
   }
 
-  // *** async/await - handle our asychronous code
-  // *** try/catch - handle our errors - TRY to resolve the promise, & if not successful it will CATCH our errors
-
   handleGetCityInfo = async (event) => {
     event.preventDefault();
 
@@ -33,55 +31,62 @@ class App extends React.Component {
       let url = `https://us1.locationiq.com/v1/search?key=${process.env.REACT_APP_LOCATIONIQ_API}&q=${this.state.city}&format=json`
 
       let cityDataFromAxios = await axios.get(url);
+      let data = cityDataFromAxios.data;
 
-      // TODO: store that return from axios into state
-
-      // console.log(cityDataFromAxios.data[0]);
-      // cityDataFromAxios -> variable that holds the whole return from Axios
-      // .data property -> where axios stores the return from the API
-      // [0] -> first obj in the API response that is the actual city I searched for
-
+      if (data.length > 0) {
       this.setState({
-        locationData: cityDataFromAxios.data[0],
+        locationData: {
+          latitude: data[0].lat,
+          longitude: data[0].lon,
+          display_name: data[0].display_name
+        },
+        mapImageURL: `https://maps.locationiq.com/v3/staticmap?key=${process.env.REACT_APP_LOCATIONIQ_API}&center=${data[0].lat},${data[0].lon}&zoom=13`,
         error: false, 
         errorMsg: ''
       })
-
-    } catch (error) {
-      // TODO: Set state with the error boolean and the error message
+    } else {
       this.setState({
         error: true,
-        errorMsg: error.response.data.error
+        errorMsg: 'No Results',
+        mapImageURL: ''
       })
     }
-
+    } catch (error) {
+      this.setState({
+        error: true,
+        errorMsg: 'Error fetching data, ' + error.message,
+        mapImageURL: '',
+      });
+    }
   }
 
-  // *** MAP PORTION OF YOUR LAB IMG SRC POINTS TO THIS URL: 
-  // *** https://maps.locationiq.com/v3/staticmap?key=<YOUR API KEY>&center=<CITY'S LAT>,<CITY'S LON>&zoom=13
-
-
   render() {
-
     return (
-      <>
-        <form onSubmit={this.handleGetCityInfo}>
+      <div className="app-container">
+        <h1>City Explorer</h1>
+        <form onSubmit={this.handleGetCityInfo} className="form-container">
           <label htmlFor=""> Enter a City Name:
             <input type="text" onInput={this.handleCityInput} />
           </label>
-          <button type="submit">Explore!</button>
+          <button type="submit" className="submit-button">Explore!</button>
         </form>
-
-        {/* TERNARY - WTF */}
-
+      
         { 
-          this.state.error 
-          ? <p>{this.state.errorMsg}</p>
-          : <p>{this.state.locationData.display_name}</p>
+          this.state.error
+          ? (<p className="error-message">{this.state.errorMsg}</p>)
+          :(
+            <div className="content">
+           <p className="location-info">{this.state.locationData.display_name}</p>
+           <p className="location-info">Latitude: {this.state.locationData.longitude}</p>
+           <p className="location-info">Longitude: {this.state.locationData.longitude}</p>
+           {this.state.mapImageURL && <img src={this.state.mapImageURL} alt="City Map" className="city-map"/>}
+          </div>
+          )}
+          <footer className="footer">Author: Wasim Soomro</footer>
+          </div>
+    );
+          }
         }
-      </>
-    )
-  }
-}
-
 export default App;
+
+//Code referenced from Alex Chao during code review

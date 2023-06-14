@@ -20,12 +20,14 @@
 ## Credit and Collaborations
 Used demo code from class
 
-Name of feature: ________________________________
+Name of feature: Set up React Repo and API Keys
+Estimate of time needed to complete: 60 mins
+Start time: Various
+Finish time: Various
+Actual time needed to complete: 90 mins
 
-Estimate of time needed to complete: _____
-
-Start time: _____
-
-Finish time: _____
-
-Actual time needed to complete: _____
+Name of feature: 2. Locations
+Estimate of time needed to complete: 60 mins
+Start time: 1010 PM
+Finish time: 
+Actual time needed to complete: 
