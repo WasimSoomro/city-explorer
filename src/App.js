@@ -26,31 +26,34 @@ class App extends React.Component {
   handleGetCityInfo = async (event) => {
     event.preventDefault();
 
+    let url = `${process.env.REACT_APP_SERVER}/weather?description=amman`
+
     try {
 
       let url = `https://us1.locationiq.com/v1/search?key=${process.env.REACT_APP_LOCATIONIQ_API}&q=${this.state.city}&format=json`
+
 
       let cityDataFromAxios = await axios.get(url);
       let data = cityDataFromAxios.data;
 
       if (data.length > 0) {
-      this.setState({
-        locationData: {
-          latitude: data[0].lat,
-          longitude: data[0].lon,
-          display_name: data[0].display_name
-        },
-        mapImageURL: `https://maps.locationiq.com/v3/staticmap?key=${process.env.REACT_APP_LOCATIONIQ_API}&center=${data[0].lat},${data[0].lon}&zoom=13`,
-        error: false, 
-        errorMsg: ''
-      })
-    } else {
-      this.setState({
-        error: true,
-        errorMsg: 'No Results',
-        mapImageURL: ''
-      })
-    }
+        this.setState({
+          locationData: {
+            latitude: data[0].lat,
+            longitude: data[0].lon,
+            display_name: data[0].display_name
+          },
+          mapImageURL: `https://maps.locationiq.com/v3/staticmap?key=${process.env.REACT_APP_LOCATIONIQ_API}&center=${data[0].lat},${data[0].lon}&zoom=13`,
+          error: false,
+          errorMsg: ''
+        })
+      } else {
+        this.setState({
+          error: true,
+          errorMsg: 'No Results',
+          mapImageURL: ''
+        })
+      }
     } catch (error) {
       this.setState({
         error: true,
@@ -70,24 +73,24 @@ class App extends React.Component {
           </label>
           <button type="submit" className="submit-button">Explore!</button>
         </form>
-      
-        { 
-          this.state.error
-          ? (<p className="error-message">{this.state.errorMsg}</p>)
-          :(
-            <div className="content">
-           <p className="location-info">{this.state.locationData.display_name}</p>
-           <p className="location-info">Latitude: {this.state.locationData.longitude}</p>
-           <p className="location-info">Longitude: {this.state.locationData.longitude}</p>
-           {this.state.mapImageURL && <img src={this.state.mapImageURL} alt="City Map" className="city-map"/>}
-          </div>
-          )}
-          <footer className="footer">Author: Wasim Soomro</footer>
-          </div>
-    );
-          }
-        }
 
-        export default App;
+        {
+          this.state.error
+            ? (<p className="error-message">{this.state.errorMsg}</p>)
+            : (
+              <div className="content">
+                <p className="location-info">{this.state.locationData.display_name}</p>
+                <p className="location-info">Latitude: {this.state.locationData.longitude}</p>
+                <p className="location-info">Longitude: {this.state.locationData.longitude}</p>
+                {this.state.mapImageURL && <img src={this.state.mapImageURL} alt="City Map" className="city-map" />}
+              </div>
+            )}
+        <footer className="footer">Author: Wasim Soomro</footer>
+      </div>
+    );
+  }
+}
+
+export default App;
 
 //Code referenced from Alex Chao during code review
