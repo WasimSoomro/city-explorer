@@ -13,7 +13,8 @@ class App extends React.Component {
       locationData: [],
       error: false,
       errorMsg: '',
-      mapImageURL: ''
+      mapImageURL: '',
+      forecastData: []
     }
   }
 
@@ -25,8 +26,6 @@ class App extends React.Component {
 
   handleGetCityInfo = async (event) => {
     event.preventDefault();
-
-    let url = `${process.env.REACT_APP_SERVER}/weather?description=amman`
 
     try {
 
@@ -53,6 +52,7 @@ class App extends React.Component {
           errorMsg: 'No Results',
           mapImageURL: ''
         })
+        this.handleGetWeatherInfo();
       }
     } catch (error) {
       this.setState({
@@ -62,6 +62,23 @@ class App extends React.Component {
       });
     }
   }
+
+  handleGetWeatherInfo = async (lat, lon) => {
+    try {
+      let weatherURL = `${process.env.REACT_APP_SERVER}/weather?lat=&lon=searchQuery=${this.state.city}`;
+      let weatherDataAxios = await axios.get(weatherURL);
+      let forecastData = weatherDataAxios.data;
+      this.setState({
+        forecastData,
+      });
+    } catch (error) {
+        this.setState({
+          error: true,
+          errorMessage: error.message,
+        });
+      }
+    }
+  
 
   render() {
     return (
