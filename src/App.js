@@ -1,7 +1,4 @@
-// import logo from './logo.svg';
-import './App.css';
 import React from 'react';
-// import { render } from '@testing-library/react';
 import axios from 'axios';
 
 
@@ -15,7 +12,7 @@ class App extends React.Component {
       errorMsg: '',
       mapImageURL: '',
       forecastData: [],
-      // movies: []
+      movies: []
     }
   }
 
@@ -36,7 +33,6 @@ class App extends React.Component {
       let cityDataFromAxios = await axios.get(url);
       let data = cityDataFromAxios.data;
 
-      this.handleGetWeatherInfo(data[0].lat, data[0].lon);
 
       if (data.length > 0) {
         this.setState({
@@ -49,11 +45,17 @@ class App extends React.Component {
           error: false,
           errorMsg: ''
         })
+
+        this.handleGetWeatherInfo(data[0].lat, data[0].lon);
+        this.handleGetMovieInfo(this.state.city);
+
       } else {
         this.setState({
           error: true,
           errorMsg: 'No Results',
-          mapImageURL: ''
+          mapImageURL: '',
+          forecastData: [],
+          movies: [],
         })
       }
     } catch (error) {
@@ -61,6 +63,8 @@ class App extends React.Component {
         error: true,
         errorMsg: 'Error fetching data, ' + error.message,
         mapImageURL: '',
+        forecastData: [],
+        movies: [],
       });
     }
   }
@@ -69,24 +73,40 @@ class App extends React.Component {
     try {
       let weatherURL = `${process.env.REACT_APP_SERVER}/weather?lat=${lat}&lon=${lon}&searchQuery=${this.state.city}`;
       console.log(weatherURL);
+
       let weatherDataAxios = await axios.get(weatherURL);
       let forecastData = weatherDataAxios.data;
+
       this.setState({
         forecastData,
       });
     } catch (error) {
       this.setState({
         error: true,
-        errorMessage: error.message,
+        errorMsg: 'Error fetching weather data, ' + error.message,
+        forecastData: [],
+
       });
     }
   }
 
-  // let movieURL = `${process.env.REACT_APP_SERVER}/movies?searchQuery=${this.state.city}`
+  handleGetMovieInfo = async (searchQuery) => {
+    try {
+      let movieURL = `${process.env.REACT_APP_SERVER}/movies?searchQuery=${searchQuery}`
+      let movieDataFromAxios = await axios.get(movieURL);
+      let movies = movieDataFromAxios.data;
 
-  // let movieDataFromAxios = await axios.get(movieURL);
-
-  // console.log(movieDataFromAxios.data);
+      this.setState({
+        movies: movies
+      });
+    } catch (error) {
+      this.setState({
+        error: true,
+        errorMsg: 'Error fetching movie data: ' + error.message,
+        movies: []
+      });
+    }
+  }
 
   render() {
     return (
@@ -98,31 +118,44 @@ class App extends React.Component {
           </label>
           <button type="submit" className="submit-button">Explore!</button>
         </form>
-
         {
           this.state.error
             ? (<p className="error-message">{this.state.errorMsg}</p>)
             : (
               <div className="content">
                 <p className="location-info">{this.state.locationData.display_name}</p>
-                <p className="location-info">Latitude: {this.state.locationData.longitude}</p>
+                <p className="location-info">Latitude: {this.state.locationData.latitude}</p>
                 <p className="location-info">Longitude: {this.state.locationData.longitude}</p>
-                {/* <p className="location-info">Date: {this.state.forecastData.map((day, index) => day.date)}</p>
-                <p className="location-info">Weather: {this.state.forecastData.map((day, index) => day.description)}</p> */}
-                {this.state.forecastData.map((day, index) => (
+
+                {this.state.forecastData.length > 0 && (
                   <>
-                  <p>
-                    Date: {day.date}
-                  </p>
-                  <p>
-                    Weather: {day.description}
-                  </p>
+                    <h2>Weather Forecast</h2>
+                    {this.state.forecastData.map((day, index) => (
+                      <div key={index}>
+                        <p>Date: {day.date}</p>
+                        <p>Weather: {day.description}</p>
+                      </div>
+                    ))}
                   </>
-                ))}
+                )}
 
                 {this.state.mapImageURL && <img src={this.state.mapImageURL} alt="City Map" className="city-map" />}
+                {this.state.movies.length > 0 && (
+                  <>
+                    <h2>Movies</h2>
+                    {this.state.movies.map((movie, index) => (
+                      <div key={index}>
+                        <p>Title: {movie.title}</p>
+                        <p>Overview: {movie.overview}</p>
+                        <img src={movie.image} alt={movie.title} />
+                      </div>
+                    ))}
+                  </>
+                )}
+
               </div>
             )}
+
         <footer className="footer">Author: Wasim Soomro</footer>
       </div>
     );
