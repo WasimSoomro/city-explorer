@@ -14,7 +14,8 @@ class App extends React.Component {
       error: false,
       errorMsg: '',
       mapImageURL: '',
-      forecastData: []
+      forecastData: [],
+      // movies: []
     }
   }
 
@@ -35,7 +36,8 @@ class App extends React.Component {
       let cityDataFromAxios = await axios.get(url);
       let data = cityDataFromAxios.data;
 
-      this.handleGetWeatherInfo();
+      this.handleGetWeatherInfo(data[0].lat, data[0].lon);
+
       if (data.length > 0) {
         this.setState({
           locationData: {
@@ -63,9 +65,9 @@ class App extends React.Component {
     }
   }
 
-  handleGetWeatherInfo = async () => {
+  handleGetWeatherInfo = async (lat, lon) => {
     try {
-      let weatherURL = `${process.env.REACT_APP_SERVER}/weather?searchQuery=${this.state.city}`;
+      let weatherURL = `${process.env.REACT_APP_SERVER}/weather?lat=${lat}&lon=${lon}&searchQuery=${this.state.city}`;
       console.log(weatherURL);
       let weatherDataAxios = await axios.get(weatherURL);
       let forecastData = weatherDataAxios.data;
@@ -80,6 +82,11 @@ class App extends React.Component {
     }
   }
 
+  // let movieURL = `${process.env.REACT_APP_SERVER}/movies?searchQuery=${this.state.city}`
+
+  // let movieDataFromAxios = await axios.get(movieURL);
+
+  // console.log(movieDataFromAxios.data);
 
   render() {
     return (
@@ -102,7 +109,6 @@ class App extends React.Component {
                 <p className="location-info">Longitude: {this.state.locationData.longitude}</p>
                 {/* <p className="location-info">Date: {this.state.forecastData.map((day, index) => day.date)}</p>
                 <p className="location-info">Weather: {this.state.forecastData.map((day, index) => day.description)}</p> */}
-
                 {this.state.forecastData.map((day, index) => (
                   <>
                   <p>
