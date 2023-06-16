@@ -35,6 +35,7 @@ class App extends React.Component {
       let cityDataFromAxios = await axios.get(url);
       let data = cityDataFromAxios.data;
 
+      this.handleGetWeatherInfo();
       if (data.length > 0) {
         this.setState({
           locationData: {
@@ -52,7 +53,6 @@ class App extends React.Component {
           errorMsg: 'No Results',
           mapImageURL: ''
         })
-        this.handleGetWeatherInfo();
       }
     } catch (error) {
       this.setState({
@@ -63,22 +63,23 @@ class App extends React.Component {
     }
   }
 
-  handleGetWeatherInfo = async (lat, lon) => {
+  handleGetWeatherInfo = async () => {
     try {
-      let weatherURL = `${process.env.REACT_APP_SERVER}/weather?lat=&lon=searchQuery=${this.state.city}`;
+      let weatherURL = `${process.env.REACT_APP_SERVER}/weather?searchQuery=${this.state.city}`;
+      console.log(weatherURL);
       let weatherDataAxios = await axios.get(weatherURL);
       let forecastData = weatherDataAxios.data;
       this.setState({
         forecastData,
       });
     } catch (error) {
-        this.setState({
-          error: true,
-          errorMessage: error.message,
-        });
-      }
+      this.setState({
+        error: true,
+        errorMessage: error.message,
+      });
     }
-  
+  }
+
 
   render() {
     return (
@@ -99,6 +100,20 @@ class App extends React.Component {
                 <p className="location-info">{this.state.locationData.display_name}</p>
                 <p className="location-info">Latitude: {this.state.locationData.longitude}</p>
                 <p className="location-info">Longitude: {this.state.locationData.longitude}</p>
+                {/* <p className="location-info">Date: {this.state.forecastData.map((day, index) => day.date)}</p>
+                <p className="location-info">Weather: {this.state.forecastData.map((day, index) => day.description)}</p> */}
+
+                {this.state.forecastData.map((day, index) => (
+                  <>
+                  <p>
+                    Date: {day.date}
+                  </p>
+                  <p>
+                    Weather: {day.description}
+                  </p>
+                  </>
+                ))}
+
                 {this.state.mapImageURL && <img src={this.state.mapImageURL} alt="City Map" className="city-map" />}
               </div>
             )}
@@ -111,3 +126,4 @@ class App extends React.Component {
 export default App;
 
 //Code referenced from Alex Chao during code review
+//TA Help
