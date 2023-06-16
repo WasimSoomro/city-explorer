@@ -29,5 +29,18 @@ Actual time needed to complete: 90 mins
 Name of feature: 2. Locations
 Estimate of time needed to complete: 60 mins
 Start time: 1010 PM
-Finish time: 
-Actual time needed to complete: 
+Finish time: Various
+Actual time needed to complete: 90 mins
+
+
+Name of feature: 1. Weather API
+Estimate of time needed to complete: 120 mins
+Start time: 2130 PM
+Finish time: 2330
+Actual time needed to complete: 120 mins
+
+Name of feature: 2. Movies API
+Estimate of time needed to complete: 120 mins
+Start time: 2330 
+Finish time: 0130
+Actual time needed to complete: 120 mins
