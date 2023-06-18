@@ -1,5 +1,7 @@
 import React from 'react';
 import axios from 'axios';
+import Weather from './Weather/Weather';
+import Movie from './Movies/Movie'
 
 
 class App extends React.Component {
@@ -128,29 +130,32 @@ class App extends React.Component {
                 <p className="location-info">Longitude: {this.state.locationData.longitude}</p>
 
                 {this.state.forecastData.length > 0 && (
-                  <>
-                    <h2>Weather Forecast</h2>
-                    {this.state.forecastData.map((day, index) => (
-                      <div key={index}>
-                        <p>Date: {day.date}</p>
-                        <p>Weather: {day.description}</p>
-                      </div>
-                    ))}
-                  </>
+                  <Weather forecastData={this.state.forecastData}/>
+                  // <>
+                  //   <h2>Weather Forecast</h2>
+                  //   {this.state.forecastData.map((day, index) => (
+                  //     <div key={index}>
+                  //       <p>Date: {day.date}</p>
+                  //       <p>Weather: {day.description}</p>
+                  //     </div>
+                  //   ))}
+                  // </>
                 )}
 
                 {this.state.mapImageURL && <img src={this.state.mapImageURL} alt="City Map" className="city-map" />}
+
                 {this.state.movies.length > 0 && (
-                  <>
-                    <h2>Movies</h2>
-                    {this.state.movies.map((movie, index) => (
-                      <div key={index}>
-                        <p>Title: {movie.title}</p>
-                        <p>Overview: {movie.overview}</p>
-                        <img src={movie.image} alt={movie.title} />
-                      </div>
-                    ))}
-                  </>
+                    <Movie  movies ={this.state.movies}/>
+                  // <>
+                  //   <h2>Movies</h2>
+                  //   {this.state.movies.map((movie, index) => (
+                  //     <div key={index}>
+                  //       <p>Title: {movie.title}</p>
+                  //       <p>Overview: {movie.overview}</p>
+                  //       <img src={movie.image} alt={movie.title} />
+                  //     </div>
+                  //   ))}
+                  // </>
                 )}
 
               </div>
